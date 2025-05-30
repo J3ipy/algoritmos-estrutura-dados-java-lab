@@ -1,4 +1,4 @@
-package main.java.algoritmos.recursivos;
+package algoritmos.recursivos;
 
 public class Fibonacci {
 
