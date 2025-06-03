@@ -23,7 +23,7 @@ public class ArvoreBinariaSimples<T> implements IArvoreBinaria<T> {
         this.noRaiz = noRaiz;
     }
 
-    //OK
+    // OK
     @Override
     public int tamanho() {
         if (this.estaVazia()) {
@@ -32,7 +32,7 @@ public class ArvoreBinariaSimples<T> implements IArvoreBinaria<T> {
         return this.noRaiz.tamanho();
     }
 
-    //OK
+    // OK
     @Override
     public int altura() {
         if (this.estaVazia()) {
@@ -42,7 +42,7 @@ public class ArvoreBinariaSimples<T> implements IArvoreBinaria<T> {
         return this.noRaiz.altura();
     }
 
-    //OK
+    // OK
     @Override
     public int grau() {
         if (this.estaVazia()) {
@@ -51,14 +51,13 @@ public class ArvoreBinariaSimples<T> implements IArvoreBinaria<T> {
         return calcularGrauMaximoRecursivo(obterNoRaiz());
     }
 
-    //OK
+    // OK
     private int calcularGrauMaximoRecursivo(INoArvoreBinaria<T> no) {
         if (no == null) {
             return 0; // Grau mínimo para comparação
         }
+
         int grauDoNoAtual = no.grau();
-        if (no.obterNoEsquerdo() != null) grauDoNoAtual++;
-        if (no.obterNoDireito()  != null) grauDoNoAtual++;
 
         int grauMaxEsq = calcularGrauMaximoRecursivo(no.obterNoEsquerdo());
         int grauMaxDir = calcularGrauMaximoRecursivo(no.obterNoDireito());
@@ -66,23 +65,43 @@ public class ArvoreBinariaSimples<T> implements IArvoreBinaria<T> {
         return Math.max(grauDoNoAtual, Math.max(grauMaxEsq, grauMaxDir));
     }
 
-    //OK
+    // OK
     @Override
     public int arestas() {
         if (this.estaVazia()) {
             return -1;
         }
-        return this.tamanho() - 1; //(N - 1) - N: Número de nós
+        return this.tamanho() - 1; // (N - 1) - N: Número de nós
     }
 
-    // Pensando em como fazer isso 
+    // OK
     public int nivelNo(T dado) {
-        if (this.estaVazia()) {
-            return -1;
-        }
-        return 0;
+        return encontrarNivelNoRecursivo(this.noRaiz, dado, 0);
     }
 
+    private int encontrarNivelNoRecursivo(INoArvoreBinaria<T> noAtual, T dado, int nivelAtual) {
+        if (noAtual == null) {
+            return -1; // Dado não encontrado neste caminho ou árvore/subárvore vazia
+        }
+
+        // Tratamento para dados nulos e comparação com equals para objetos
+        if (dado == null) {
+            if (noAtual.obterDado() == null) {
+                return nivelAtual; // Encontrou um nó com dado nulo
+            }
+        } else if (dado.equals(noAtual.obterDado())) {
+            return nivelAtual; // Dado encontrado
+        }
+
+        // Procura na subárvore esquerda
+        int nivelEsquerdo = encontrarNivelNoRecursivo(noAtual.obterNoEsquerdo(), dado, nivelAtual + 1);
+        if (nivelEsquerdo != -1) {
+            return nivelEsquerdo; // Dado encontrado na subárvore esquerda
+        }
+
+        // Procura na subárvore direita (só se não encontrou na esquerda)
+        return encontrarNivelNoRecursivo(noAtual.obterNoDireito(), dado, nivelAtual + 1);
+    }
 
     @Override
     public void percorrerPreOrdem(Consumer<T> acao) {
@@ -97,7 +116,7 @@ public class ArvoreBinariaSimples<T> implements IArvoreBinaria<T> {
         percorrerPreOrdem(no.obterNoDireito(), acao);
     }
 
-    //OK
+    // OK
     @Override
     public void percorrerEmOrdem(Consumer<T> acao) {
         percorrerEmOrdem(this.noRaiz, acao);
@@ -111,7 +130,7 @@ public class ArvoreBinariaSimples<T> implements IArvoreBinaria<T> {
         percorrerEmOrdem(no.obterNoDireito(), acao);
     }
 
-    //OK
+    // OK
     @Override
     public void percorrerPosOrdem(Consumer<T> acao) {
         percorrerPosOrdem(this.noRaiz, acao);
@@ -126,10 +145,27 @@ public class ArvoreBinariaSimples<T> implements IArvoreBinaria<T> {
         acao.accept(no.obterDado());
     }
 
-    // em dúvida
+    // OK
     @Override
     public void percorrerEmOrdemNivel(Consumer<T> acao) {
-        //pensando em como fazer isso
+        if (this.estaVazia()) {
+            return;
+        }
+        int h = altura(); // Pega a altura da árvore
+        for (int i = 0; i <= h; i++) {
+            processarNivelAtual(this.noRaiz, i, acao);
+        }
     }
 
+    private void processarNivelAtual(INoArvoreBinaria<T> no, int nivel, Consumer<T> acao) {
+        if (no == null) {
+            return;
+        }
+        if (nivel == 0) { // Se este é o nível que queremos processar
+            acao.accept(no.obterDado());
+        } else if (nivel > 0) {
+            processarNivelAtual(no.obterNoEsquerdo(), nivel - 1, acao);
+            processarNivelAtual(no.obterNoDireito(), nivel - 1, acao);
+        }
+    }
 }

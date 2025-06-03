@@ -1,4 +1,3 @@
-import algoritmos.recursivos.Fibonacci;
 import algoritmos.recursivos.Fibonacci_melhorado;
 
 public class App {
