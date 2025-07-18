@@ -16,6 +16,11 @@ public class NoArvoreBinaria<T> implements INoArvoreBinaria<T> {
     }
 
     @Override
+    public void definirDado(T dado) {
+        this.dado = dado;
+    }
+
+    @Override
     public INoArvoreBinaria<T> obterNoEsquerdo() {
       return this.noEsquerdo;
     }

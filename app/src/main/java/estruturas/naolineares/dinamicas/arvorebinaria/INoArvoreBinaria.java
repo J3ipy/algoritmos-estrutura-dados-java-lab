@@ -1,10 +1,13 @@
 package estruturas.naolineares.dinamicas.arvorebinaria;
 
-
 public interface INoArvoreBinaria<T> {
 
     //Retorna os dados armazenados no nó.
     public T obterDado();
+
+    //Define o dado a ser armazenado no nó.
+    //Obs.: A semântica de uma árvore binária de busca (BST) exige a definição/substituição de dados durante a remoção. 
+    public void definirDado(T dado);
 
     //Retorna o filho esquerdo do nó.
     public INoArvoreBinaria<T> obterNoEsquerdo();
